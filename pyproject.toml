@@ -1,0 +1,22 @@
+[project]
+name = "llm-execute-shell"
+version = "0.1.0"
+description = "A tool plugin for LLM to enable executing shell commands on the user's system."
+readme = "README.md"
+authors = [{name = "Joey Thometz"}]
+license = "Apache-2.0"
+classifiers = []
+requires-python = ">=3.9"
+dependencies = [
+    "llm",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.entry-points.llm]
+tools_execute_shell = "llm_tools_execute_shell"
+
+[project.optional-dependencies]
+test = ["pytest", "llm-echo>=0.3a1"]
