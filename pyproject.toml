@@ -1,5 +1,5 @@
 [project]
-name = "llm-execute-shell"
+name = "llm-tools-execute-shell"
 version = "0.1.0"
 description = "A tool plugin for LLM to enable executing shell commands on the user's system."
 readme = "README.md"
