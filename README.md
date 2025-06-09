@@ -1,5 +1,8 @@
 # llm-tools-execute-shell
 
+[![PyPI](https://img.shields.io/pypi/v/llm-tools-execute-shell.svg)](https://pypi.org/project/llm-tools-execute-shell/)
+[![Changelog](https://img.shields.io/github/v/release/jthometz/llm-tools-execute-shell?include_prereleases&label=changelog)](https://github.com/jthometz/llm-tools-execute-shell/releases)
+[![Tests](https://github.com/jthometz/llm-tools-execute-shell/actions/workflows/test.yml/badge.svg)](https://github.com/jthometz/llm-tools-execute-shell/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/simonw/llm-tools-datasette/blob/main/LICENSE)
 
 A tool plugin for [LLM](https://llm.datasette.io/en/stable/) that allows you to execute arbitrary shell commands suggested by the LLM.
@@ -10,42 +13,20 @@ This tool can be dangerous, and for this reason, this tool prompts for confirmat
 
 ## Installation
 
-Install this plugin in the same environment as [LLM](https://llm.datasette.io/).
-
-First, clone the repository:
+Install this plugin in the same environment as [LLM](https://llm.datasette.io/):
 ```bash
-git clone https://github.com/jthometz/llm-tools-execute-shell.git
-```
-Then, install the local plugin using `llm install -e`:
-```bash
-llm install -e path/to/llm-tools-execute-shell
+llm install llm-tools-execute-shell
 ```
 
 ## Usage
 
 To run a single prompt:
 ```bash
-▶ llm -T execute_shell "What's the current date and time?" --td
-
-**************************************************************************
-* WARNING: The LLM is requesting to execute the following shell command. *
-* REVIEW IT CAREFULLY. Executing unintended commands can be dangerous    *
-* and may end in disaster, like wiping your entire disk. Do not run any  *
-* command if you do not know exactly what it does.                       *
-**************************************************************************
-
-'date'
-
-Are you sure you want to run the above command? (y/n): y
-
-Tool call: execute_shell({'command': 'date'})
-  Mon Jun  9 07:23:59 AM JST 2025
-
-The current date and time is Mon Jun 9 07:23:59 AM JST 2025.
+llm -T execute_shell "What's the current date and time?" --td
 ```
 
 To run in chat mode:
-```bash
+```console
 $ llm chat -T execute_shell --td
 ...
 > How many words are in foo.txt?
