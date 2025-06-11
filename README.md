@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/llm-tools-execute-shell.svg)](https://pypi.org/project/llm-tools-execute-shell/)
 [![Changelog](https://img.shields.io/github/v/release/jthometz/llm-tools-execute-shell?include_prereleases&label=changelog)](https://github.com/jthometz/llm-tools-execute-shell/releases)
 [![Tests](https://github.com/jthometz/llm-tools-execute-shell/actions/workflows/test.yml/badge.svg)](https://github.com/jthometz/llm-tools-execute-shell/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/simonw/llm-tools-datasette/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/jthometz/llm-tools-execute-shell/blob/main/LICENSE)
 
 A tool plugin for [LLM](https://llm.datasette.io/en/stable/) that allows you to execute arbitrary shell commands suggested by the LLM.
 
@@ -22,31 +22,39 @@ llm install llm-tools-execute-shell
 
 To run a single prompt:
 ```bash
-llm -T execute_shell "What's the current date and time?" --td
+llm --tool execute_shell "What's the current date and time?" --tools-debug
 ```
 
 To run in chat mode:
 ```console
-$ llm chat -T execute_shell --td
+$ llm chat --tool execute_shell --tools-debug
 ...
-> How many words are in foo.txt?
+> My req.py script is broken. Can you run it and fix the error?
 ...
-'cat foo.txt | wc -w'
+LLM wants to run command: 'python req.py'
+
 Are you sure you want to run the above command? (y/n): y
-Tool call: execute_shell({'command': 'cat foo.txt | wc -w'})
-  35
 
-There are 35 words in `foo.txt`.
+Tool call: execute_shell({'command': 'python req.py'})
+  Traceback (most recent call last):
+    File "/tmp/foo/req.py", line 1, in <module>
+      import requests
+  ModuleNotFoundError: No module named 'requests'
 
-> How many lines?
-...
-'cat foo.txt | wc -l'
+LLM wants to run command: 'pip install requests'
+
 Are you sure you want to run the above command? (y/n): y
-Tool call: execute_shell({'command': 'cat foo.txt | wc -l'})
-  6
 
-There are 6 lines in `foo.txt`.
->
+Tool call: execute_shell({'command': 'pip install requests'})
+...
+LLM wants to run command: 'python req.py'
+
+Are you sure you want to run the above command? (y/n): y
+
+Tool call: execute_shell({'command': 'python req.py'})
+  {'origin': 'success'}
+
+It looks like the `req.py` script was failing because the `requests` module was not installed. I've installed it for you, and now the script runs successfully.
 ```
 
 ## Development

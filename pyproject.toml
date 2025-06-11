@@ -1,6 +1,6 @@
 [project]
 name = "llm-tools-execute-shell"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool plugin for LLM to enable executing shell commands on the user's system."
 readme = "README.md"
 authors = [{name = "Joey Thometz"}]
@@ -9,6 +9,7 @@ classifiers = []
 requires-python = ">=3.9"
 dependencies = [
     "llm",
+    "click",
 ]
 
 [build-system]

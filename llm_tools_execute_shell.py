@@ -1,23 +1,42 @@
 import llm
+import click
 import subprocess
 
+_warning_shown = False
 
 def execute_shell(command: str) -> str:
     """
     Executes a shell command on the user's system.
     Captures and returns the standard output and standard err, interleaved as a signel string.
     """
+    global _warning_shown
     confirmation = None
     while confirmation != "y" and confirmation != "n":
-        print("""
+        if not _warning_shown:
+            warning_message = """
 **************************************************************************
-* WARNING: The LLM is requesting to execute the following shell command. *
-* REVIEW IT CAREFULLY. Executing unintended commands can be dangerous    *
-* and may end in disaster, like wiping your entire disk. Do not run any  *
-* command if you do not know exactly what it does.                       *
+* WARNING: The LLM is requesting to execute a shell command.             *
+*                                                                        *
+* REVIEW THE COMMAND VERY CAREFULLY BEFORE PROCEEDING.                   *
+*                                                                        *
+* Executing unknown or malicious commands can be extremely dangerous.    *
+* It could lead to irreversible data loss (e.g., wiping your disk) or    *
+* compromise your system's security. ONLY PROCEED if you fully           *
+* understand the command and its consequences.                           *
+*                                                                        *
+* This warning will only be displayed once.                              *
 **************************************************************************
-""")
-        print(f"{repr(command)}\n")
+"""
+            click.echo(
+                click.style(warning_message, fg="yellow", bold=True),
+                err=True,
+            )
+            _warning_shown = True
+
+        click.echo(
+            click.style(f"LLM wants to run command: {repr(command)}\n", fg="yellow", bold=True),
+            err=True,
+        )
         confirmation = input("Are you sure you want to run the above command? (y/n): ").strip().lower()
     if confirmation == 'n':
         return "The shell command was cancelled by the user."
