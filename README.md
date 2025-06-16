@@ -22,12 +22,12 @@ llm install llm-tools-execute-shell
 
 To run a single prompt:
 ```bash
-llm --tool execute_shell "What's the current date and time?" --tools-debug
+llm --tool execute_shell "What's the current date and time?"
 ```
 
 To run in chat mode:
 ```console
-$ llm chat --tool execute_shell --tools-debug
+$ llm chat --tool execute_shell
 ...
 > My req.py script is broken. Can you run it and fix the error?
 ...
@@ -35,24 +35,20 @@ LLM wants to run command: 'python req.py'
 
 Are you sure you want to run the above command? (y/n): y
 
-Tool call: execute_shell({'command': 'python req.py'})
-  Traceback (most recent call last):
-    File "/tmp/foo/req.py", line 1, in <module>
-      import requests
-  ModuleNotFoundError: No module named 'requests'
+Traceback (most recent call last):
+  File "/tmp/foo/req.py", line 1, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
 
 LLM wants to run command: 'pip install requests'
 
 Are you sure you want to run the above command? (y/n): y
-
-Tool call: execute_shell({'command': 'pip install requests'})
 ...
 LLM wants to run command: 'python req.py'
 
 Are you sure you want to run the above command? (y/n): y
 
-Tool call: execute_shell({'command': 'python req.py'})
-  {'origin': 'success'}
+{'origin': 'success'}
 
 It looks like the `req.py` script was failing because the `requests` module was not installed. I've installed it for you, and now the script runs successfully.
 ```

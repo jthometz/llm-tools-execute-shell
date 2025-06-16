@@ -1,8 +1,10 @@
 import llm
 import click
 import subprocess
+import sys
 
 _warning_shown = False
+
 
 def execute_shell(command: str) -> str:
     """
@@ -12,6 +14,7 @@ def execute_shell(command: str) -> str:
     global _warning_shown
     confirmation = None
     while confirmation != "y" and confirmation != "n":
+        printed_warning_this_iteration = False
         if not _warning_shown:
             warning_message = """
 **************************************************************************
@@ -32,27 +35,53 @@ def execute_shell(command: str) -> str:
                 err=True,
             )
             _warning_shown = True
+        else:
+            # Empty newline.
+            click.echo(err=True)
 
         click.echo(
-            click.style(f"LLM wants to run command: {repr(command)}\n", fg="yellow", bold=True),
+            click.style(
+                f"\nLLM wants to run command: {repr(command)}\n", fg="yellow", bold=True
+            ),
             err=True,
         )
-        confirmation = input("Are you sure you want to run the above command? (y/n): ").strip().lower()
-    if confirmation == 'n':
+        confirmation = (
+            input("Are you sure you want to run the above command? (y/n): ")
+            .strip()
+            .lower()
+        )
+    if confirmation == "n":
         return "The shell command was cancelled by the user."
     try:
-        result = subprocess.run(
+        process = subprocess.Popen(
             command,
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            text=True
+            text=True,
+            bufsize=1,
+            universal_newlines=True,
         )
-        return str(result.stdout).strip()
+
+        output_lines = []
+        if process.stdout:
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+            for line in iter(process.stdout.readline, ""):
+                sys.stdout.write(line)
+                sys.stdout.flush()
+                output_lines.append(line)
+            process.stdout.close()
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+
+        process.wait()
+
+        return "".join(output_lines).strip()
     except Exception as e:
         return f"Error: {str(e)}"
+
 
 @llm.hookimpl
 def register_tools(register):
     register(execute_shell)
-
